@@ -52,13 +52,22 @@ horseman
 		})
 		.then(function(results) {
 			console.log(results);
+			
 			for (var i = 0; i < results.length; i++) {
-				conn.query("INSERT INTO `statics` (`company`, `date`, `sale`) VALUES (?, ?, ?)",
-						[ "ROMI", results[0].date, results[0].sale ], function(err, result) {
+				conn.query("INSERT INTO `statics` (`company`, `date`, `sale`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `company`=?, `date`=?, `sale`=?, `update_at`=current_time() ",
+						[ "ROMI", results[i].date, results[i].sale, "ROMI", results[i].date, results[i].sale ], function(err, result) {
 									if (err) {
 										console.log("Error:", err);
 									}
-									console.log(result);
+//									console.log(result);
 								});
 			}
-		}).close();
+		})
+		.wait(5000).finally(function(){
+			if(conn){
+				conn.end();
+			}
+			return horseman.close();
+		});
+
+
