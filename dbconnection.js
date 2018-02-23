@@ -18,7 +18,7 @@ module.exports = connection;
 
 //CREATE TABLE IF NOT EXISTS `statics` (
 //		 `date` date NOT NULL,
-//		 `company` varchar(50) NOT NULL,
+//		 `brand` varchar(50) NOT NULL,
 //		 `sale` int(11) DEFAULT NULL,
 //		 `update_at` timestamp DEFAULT current_timestamp,
 //		 PRIMARY KEY (`company`, `date`)
