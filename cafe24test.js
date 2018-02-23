@@ -50,19 +50,49 @@ horseman
 
 				tdArr.push(sales);
 			});
-			console.log(tdArr);
 			return tdArr;
 		})
 		.then(function(results) {
 			console.log(results);
-			
 			for (var i = 0; i < results.length; i++) {
 				conn.query("INSERT INTO `statics` (`brand`, `date`, `sale`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `brand`=?, `date`=?, `sale`=?, `update_at`=current_time() ",
 						[ userConfig.brand, results[i].date, results[i].sale, userConfig.brand, results[i].date, results[i].sale ], function(err, result) {
 									if (err) {
 										console.log("Error:", err);
 									}
-//									console.log(result);
+								});
+			}
+		})
+		.post(userConfig.visitUrl, postData)
+		.evaluate(function() {
+			var $ = window.$ || window.Jquery;
+
+			var trArr = $('#graphTbl > tbody').children();
+			var td = "";
+			var tdArr = [];
+			
+			trArr.each(function(i) {
+				td = trArr.eq(i).children();
+				var visit = {};
+				visit.date = td.eq(0).text().substring(0, 10);
+				visit.totalvisit = parseFloat(td.eq(1).text().replace(/\,/g, ''));
+				visit.firstvisit = parseFloat(td.eq(2).text().replace(/\,/g, ''));
+				visit.revisit = parseFloat(td.eq(3).text().replace(/\,/g, ''));
+				
+				tdArr.push(visit);
+			});
+			return tdArr;
+		})
+		.then(function(results) {
+			console.log(results);
+			for (var i = 0; i < results.length; i++) {
+				conn.query("INSERT INTO `statics` (`brand`, `date`, `totalvisit`, `firstvisit`, `revisit`) VALUES (?, ?, ?, ?, ?) " +
+						"ON DUPLICATE KEY UPDATE `brand`=?, `date`=?, `totalvisit`=?, `firstvisit`=?, `revisit`=?, `update_at`=current_time() ",
+						[ userConfig.brand, results[i].date, results[i].totalvisit, results[i].firstvisit,  results[i].revisit, 
+							userConfig.brand, results[i].date, results[i].totalvisit, results[i].firstvisit,  results[i].revisit ], function(err, result) {
+									if (err) {
+										console.log("Error:", err);
+									}
 								});
 			}
 		})
