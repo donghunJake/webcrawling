@@ -32,9 +32,7 @@ horseman
 
 		.open(userConfig.staticUrl)		// 접속통계화면으로
 		.wait('10000')
-		.post(userConfig.saleUrl, postData)
-		
-		// 날짜 설정 후 매출종합분석화면으로 이동
+		.post(userConfig.saleUrl, postData)// 날짜 설정 후 매출종합분석화면으로 이동
 		.evaluate(function() {
 			var $ = window.$ || window.Jquery;
 
@@ -96,6 +94,132 @@ horseman
 								});
 			}
 		})
+		.post(userConfig.memberUrl, postData) // 신규가입자 수 화면으로 이동
+		.evaluate(function() {
+			var $ = window.$ || window.Jquery;
+		
+			var trArr = $('#graphTbl > tbody').children();
+			var td = "";
+			var tdArr = [];
+			
+			trArr.each(function(i) {
+				td = trArr.eq(i).children();
+				var member = {};
+				member.date = td.eq(0).text().substring(0, 10);
+				member.newmember = parseFloat(td.eq(1).text().replace(/\,/g, ''));
+				
+				tdArr.push(member);
+			});
+			return tdArr;
+		})
+		.then(function(results) {
+			console.log(results);
+			for (var i = 0; i < results.length; i++) {
+				conn.query("INSERT INTO `statics` (`brand`, `date`, `newmember`) VALUES (?, ?, ?) " +
+						"ON DUPLICATE KEY UPDATE `brand`=?, `date`=?, `newmember`=?, `update_at`=current_time() ",
+						[ userConfig.brand, results[i].date, results[i].newmember,
+							userConfig.brand, results[i].date, results[i].newmember], function(err, result) {
+									if (err) {
+										console.log("Error:", err);
+									}
+								});
+			}
+		})
+		.post(userConfig.pvUrl, postData) // 페이지뷰 화면으로 이동
+		.evaluate(function() {
+			var $ = window.$ || window.Jquery;
+		
+			var trArr = $('#graphTbl > tbody').children();
+			var td = "";
+			var tdArr = [];
+			
+			trArr.each(function(i) {
+				td = trArr.eq(i).children();
+				var pvs = {};
+				pvs.date = td.eq(0).text().substring(0, 10);
+				pvs.pv = parseFloat(td.eq(1).text().replace(/\,/g, ''));
+				
+				tdArr.push(pvs);
+			});
+			return tdArr;
+		})
+		.then(function(results) {
+			console.log(results);
+			for (var i = 0; i < results.length; i++) {
+				conn.query("INSERT INTO `statics` (`brand`, `date`, `pv`) VALUES (?, ?, ?) " +
+						"ON DUPLICATE KEY UPDATE `brand`=?, `date`=?, `pv`=?, `update_at`=current_time() ",
+						[ userConfig.brand, results[i].date, results[i].pv,
+							userConfig.brand, results[i].date, results[i].pv], function(err, result) {
+									if (err) {
+										console.log("Error:", err);
+									}
+								});
+			}
+		})
+		.post(userConfig.permanUrl, postData) // 1인당 매출분석 화면으로 이동
+		.evaluate(function() {
+			var $ = window.$ || window.Jquery;
+		
+			var trArr = $('#graphTbl > tbody').children();
+			var td = "";
+			var tdArr = [];
+			
+			trArr.each(function(i) {
+				td = trArr.eq(i).children();
+				var permans = {};
+				permans.date = td.eq(0).text().substring(0, 10);
+				permans.perman = parseFloat(td.eq(2).text().replace(/\,/g, ''));
+				
+				tdArr.push(permans);
+			});
+			return tdArr;
+		})
+		.then(function(results) {
+			console.log(results);
+			for (var i = 0; i < results.length; i++) {
+				conn.query("INSERT INTO `statics` (`brand`, `date`, `perman`) VALUES (?, ?, ?) " +
+						"ON DUPLICATE KEY UPDATE `brand`=?, `date`=?, `perman`=?, `update_at`=current_time() ",
+						[ userConfig.brand, results[i].date, results[i].perman,
+							userConfig.brand, results[i].date, results[i].perman], function(err, result) {
+									if (err) {
+										console.log("Error:", err);
+									}
+								});
+			}
+		})
+		.post(userConfig.buyerUrl, postData) // 구매분석 화면으로 이동
+		.waitForSelector('#graphTbl')
+		.evaluate(function() {
+			var $ = window.$ || window.Jquery;
+		
+			var trArr = $('#graphTbl > tbody').children();
+			var td = "";
+			var tdArr = [];
+			
+			trArr.each(function(i) {
+				td = trArr.eq(i).children();
+				var buyers = {};
+				buyers.date = td.eq(0).text().substring(0, 10);
+				buyers.buyer = parseFloat(td.eq(5).text().replace(/\,/g, ''));
+				
+				tdArr.push(buyers);
+			});
+			return tdArr;
+		})
+		.then(function(results) {
+			console.log(results);
+			for (var i = 0; i < results.length; i++) {
+				conn.query("INSERT INTO `statics` (`brand`, `date`, `buyer`) VALUES (?, ?, ?) " +
+						"ON DUPLICATE KEY UPDATE `brand`=?, `date`=?, `buyer`=?, `update_at`=current_time() ",
+						[ userConfig.brand, results[i].date, results[i].buyer,
+							userConfig.brand, results[i].date, results[i].buyer], function(err, result) {
+									if (err) {
+										console.log("Error:", err);
+									}
+								});
+			}
+		})
+		.screenshot('test.png')
 		.wait(5000).finally(function(){
 			if(conn){
 				conn.end();
