@@ -33,6 +33,7 @@ horseman
 		.open(userConfig.staticUrl)		// 접속통계화면으로
 		.wait('10000')
 		.post(userConfig.saleUrl, postData)// 날짜 설정 후 매출종합분석화면으로 이동
+		.waitForSelector('#graphTbl')
 		.evaluate(function() {
 			var $ = window.$ || window.Jquery;
 
@@ -62,6 +63,7 @@ horseman
 			}
 		})
 		.post(userConfig.visitUrl, postData)
+		.waitForSelector('#graphTbl')
 		.evaluate(function() {
 			var $ = window.$ || window.Jquery;
 
@@ -95,6 +97,7 @@ horseman
 			}
 		})
 		.post(userConfig.memberUrl, postData) // 신규가입자 수 화면으로 이동
+		.waitForSelector('#graphTbl')
 		.evaluate(function() {
 			var $ = window.$ || window.Jquery;
 		
@@ -126,6 +129,7 @@ horseman
 			}
 		})
 		.post(userConfig.pvUrl, postData) // 페이지뷰 화면으로 이동
+		.waitForSelector('#graphTbl')
 		.evaluate(function() {
 			var $ = window.$ || window.Jquery;
 		
@@ -157,6 +161,7 @@ horseman
 			}
 		})
 		.post(userConfig.permanUrl, postData) // 1인당 매출분석 화면으로 이동
+		.waitForSelector('#graphTbl')
 		.evaluate(function() {
 			var $ = window.$ || window.Jquery;
 		
@@ -219,7 +224,6 @@ horseman
 								});
 			}
 		})
-		.screenshot('test.png')
 		.wait(5000).finally(function(){
 			if(conn){
 				conn.end();

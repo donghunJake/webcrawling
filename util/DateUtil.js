@@ -38,11 +38,22 @@ DateUtil.lastweek = function() {
 
 DateUtil.lastmonth = function() {
 	var date = new Date();
+	var dayOfMonth = date.getDate();
 	var monthOfYear = date.getMonth();
+	date.setDate(dayOfMonth - 1);
 	date.setMonth(monthOfYear - 1);
 
 	return getDataStr(date);
 };
 
+DateUtil.lastyear = function() {
+	var date = new Date();
+	var dayOfMonth = date.getDate();
+	var year = date.getYear();
+	date.setDate(dayOfMonth - 1);
+	date.setFullYear(year - 1);
+	
+	return getDataStr(date);
+};
 
 module.exports = DateUtil;
