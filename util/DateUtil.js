@@ -20,7 +20,7 @@ function getDataStr(myDate) {
 	return year + "-" + month + "-" + day;
 }
 
-DateUtil.today = function (){
+DateUtil.lastday = function (){
 	var date = new Date();
 	var dayOfMonth = date.getDate();
 	date.setDate(dayOfMonth - 1);
@@ -31,16 +31,14 @@ DateUtil.today = function (){
 DateUtil.lastweek = function() {
 	var date = new Date();
 	var dayOfMonth = date.getDate();
-	date.setDate(dayOfMonth - 8);
+	date.setDate(dayOfMonth - 7);
 
 	return getDataStr(date);
 };
 
 DateUtil.lastmonth = function() {
 	var date = new Date();
-	var dayOfMonth = date.getDate();
 	var monthOfYear = date.getMonth();
-	date.setDate(dayOfMonth - 1);
 	date.setMonth(monthOfYear - 1);
 
 	return getDataStr(date);

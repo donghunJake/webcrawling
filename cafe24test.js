@@ -10,7 +10,7 @@ var DateUtil = require('./util/DateUtil');
 var postData = 'VAL_DATE%5Bstart_dt%5D='
 		+ DateUtil.lastweek()
 		+ '&VAL_DATE%5Bend_dt%5D='
-		+ DateUtil.today()
+		+ DateUtil.lastday()
 		+ '&avgType=prevday&VAL_DATE%5Bunit_format%5D=day&period_type=day&limitCount=20&limitStart=0&log_ver=3&extperiod=3&reportVersion=total';
 
 // node cafe24test.js moss
