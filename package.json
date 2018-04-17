@@ -9,8 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chai": "^4.1.2",
     "config": "^1.29.4",
     "mysql": "^2.15.0",
-    "node-horseman": "^3.3.0"
+    "node-horseman": "^3.3.0",
+    "open-korean-text-node": "^2.2.0"
   }
 }

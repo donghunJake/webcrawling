@@ -8,9 +8,9 @@ var config = require('config');
 var DateUtil = require('./util/DateUtil');
 
 var postData = 'VAL_DATE%5Bstart_dt%5D='
-		+ DateUtil.lastweek()
+		+  DateUtil.lastweek() //'2016-12-02' // 
 		+ '&VAL_DATE%5Bend_dt%5D='
-		+ DateUtil.lastday()
+		+  DateUtil.lastday() // '2016-12-31' //
 		+ '&avgType=prevday&VAL_DATE%5Bunit_format%5D=day&period_type=day&limitCount=20&limitStart=0&log_ver=3&extperiod=3&reportVersion=total';
 
 // node cafe24test.js moss
@@ -194,6 +194,7 @@ horseman
 		})
 		.post(userConfig.buyerUrl, postData) // 구매분석 화면으로 이동
 		.waitForSelector('#graphTbl')
+		.wait('30000')
 		.evaluate(function() {
 			var $ = window.$ || window.Jquery;
 		
