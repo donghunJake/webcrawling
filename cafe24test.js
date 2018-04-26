@@ -13,6 +13,12 @@ var postData = 'VAL_DATE%5Bstart_dt%5D='
 		+  DateUtil.lastday() // '2016-12-31' //
 		+ '&avgType=prevday&VAL_DATE%5Bunit_format%5D=day&period_type=day&limitCount=20&limitStart=0&log_ver=3&extperiod=3&reportVersion=total';
 
+var cancelPostData = 'excel_public_auth=T&searchDateRange=7&sStartDate='
+		+ DateUtil.lastweek() //'2016-12-02' //
+		+ '&sEndDate=' 
+		+ DateUtil.lastday() // '2016-12-31' //
+		+ '&sp_all=T&sp_CAFE24=T&sp_MOBILE=T&sp_MOBILE_D=T&sp_NCHECKOUT=T&sp_AUCTION=T&sp_GMARKET=T&sp_INPARK=T&sp_SK11ST=T&sp_COUPANG=T&sp_SHOPN=T&st_mileage=T&st_deposit=T&st_nv_mileage=T&rows=100';
+
 // node cafe24test.js moss
 
 var userConfig = config.get('dev.' + process.argv[2]);
@@ -219,6 +225,39 @@ horseman
 						"ON DUPLICATE KEY UPDATE `brand`=?, `date`=?, `buyer`=?, `update_at`=current_time() ",
 						[ userConfig.brand, results[i].date, results[i].buyer,
 							userConfig.brand, results[i].date, results[i].buyer], function(err, result) {
+									if (err) {
+										console.log("Error:", err);
+									}
+								});
+			}
+		})
+		
+		.post(userConfig.cancelSaleUrl, cancelPostData)  // 정산관리 화면으로 이동
+		.wait('5000')
+		.evaluate(function() {
+			var $ = window.$ || window.Jquery;
+//			#QA_day3 > div.mBoard.gScroll > table
+			var trArr = $('div.mBoard.gScroll > table > tbody').children();
+			var td = "";
+			var tdArr = [];
+			
+			trArr.each(function(i) {
+				td = trArr.eq(i).children();
+				var cancelSales = {};
+				cancelSales.date = td.eq(0).text().substring(0, 10);
+				cancelSales.cancel = parseFloat(td.eq(8).text().replace(/\,/g, ''));
+				
+				tdArr.push(cancelSales);
+			});
+			return tdArr;
+		})
+		.then(function(results) {
+			console.log(results);
+			for (var i = 0; i < results.length; i++) {
+				conn.query("INSERT INTO `statics` (`brand`, `date`, `cancel`) VALUES (?, ?, ?) " +
+						"ON DUPLICATE KEY UPDATE `brand`=?, `date`=?, `cancel`=?, `update_at`=current_time() ",
+						[ userConfig.brand, results[i].date, results[i].cancel,
+							userConfig.brand, results[i].date, results[i].cancel], function(err, result) {
 									if (err) {
 										console.log("Error:", err);
 									}
